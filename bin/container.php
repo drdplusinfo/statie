@@ -13,7 +13,7 @@ ConfigFileFinder::detectFromInput('statie', new ArgvInput());
 $configFile = ConfigFileFinder::provide('statie', ['statie.yml', 'statie.yaml']);
 
 // order is important, env variables are NOT overwritten on load
-$envFiles = [ConfigFileFinder::provide('statie', ['.env.local']), ConfigFileFinder::provide('statie', ['.env'])];
+$envFiles = [ConfigFileFinder::provide('.env.local', ['.env.local']), ConfigFileFinder::provide('.env', ['.env'])];
 $envFiles = array_filter($envFiles, function ($envFile) {
     return $envFile !== null;
 });
