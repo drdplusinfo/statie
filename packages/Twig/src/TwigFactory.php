@@ -5,6 +5,7 @@ namespace Symplify\Statie\Twig;
 use Latte\Runtime\FilterExecutor;
 use Symplify\Statie\Contract\Templating\FilterProviderInterface;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\LoaderInterface;
 use Twig_Filter;
@@ -49,9 +50,14 @@ final class TwigFactory
 
     public function create(): Environment
     {
+        $debug = ($_ENV['APP_ENV'] ?? '') === 'dev';
         $twigEnvironment = new Environment($this->arrayLoader, [
             'cache' => $this->twigCacheDirectory,
+            'debug' => $debug,
         ]);
+        if ($debug) {
+            $twigEnvironment->addExtension(new DebugExtension());
+        }
 
         // report missing variables, it's easier to debug code then in case of typo
         $twigEnvironment->enableStrictVariables();
