@@ -60,6 +60,20 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
         ];
     }
 
+    public function testMarkdownTitle(): void
+    {
+        $fileInfo = new SmartFileInfo(__DIR__ . '/MarkdownFileDecoratorSource/someFile.md');
+        $file = $this->fileFactory->createFromFileInfo($fileInfo);
+
+        $file->addConfiguration([
+            'title' => '*Why*',
+        ]);
+
+        $this->markdownFileDecorator->decorateFiles([$file]);
+
+        $this->assertSame('<em>Why</em>', $file->getConfiguration()['title']);
+    }
+
     public function testMarkdownPerex(): void
     {
         $fileInfo = new SmartFileInfo(__DIR__ . '/MarkdownFileDecoratorSource/someFile.md');

@@ -2,7 +2,6 @@
 
 namespace Symplify\Statie\Renderable;
 
-use Nette\Utils\Strings;
 use ParsedownExtra;
 use Symplify\Statie\Contract\Renderable\FileDecoratorInterface;
 use Symplify\Statie\Generator\Configuration\GeneratorElement;
@@ -59,26 +58,35 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
             return;
         }
 
+        $this->decorateTitle($file);
         $this->decoratePerex($file);
         $this->decorateContent($file);
+    }
+
+    private function decorateTitle(AbstractFile $file): void
+    {
+        $configuration = $file->getConfiguration();
+        if (($configuration['title'] ?? '') === '') {
+            return;
+        }
+        $configuration['title'] = $this->toSimpleHtml($configuration['title']);
+        $file->addConfiguration($configuration);
     }
 
     private function decoratePerex(AbstractFile $file): void
     {
         $configuration = $file->getConfiguration();
-        if (! isset($configuration['perex'])) {
+        if (($configuration['perex'] ?? '') === '') {
             return;
         }
-
-        if ($configuration['perex']) {
-            $markdownedPerex = $this->parsedownExtra->text($configuration['perex']);
-
-            // remove <p></p>
-            $markdownedPerex = Strings::substring($markdownedPerex, 3, -4);
-            $configuration['perex'] = $markdownedPerex;
-        }
-
+        $configuration['perex'] = $this->toSimpleHtml($configuration['perex']);
         $file->addConfiguration($configuration);
+    }
+
+    private function toSimpleHtml(string $markdown): string
+    {
+        $html = $this->parsedownExtra->text($markdown);
+        return preg_replace('~^<p>(.*)</p>$~', '$1', $html);
     }
 
     private function decorateContent(AbstractFile $file): void
