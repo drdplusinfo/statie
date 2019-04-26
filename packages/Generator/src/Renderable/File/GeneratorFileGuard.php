@@ -21,7 +21,7 @@ final class GeneratorFileGuard
         throw new GeneratorException(sprintf('"%s" must inherit from "%s"', $class, AbstractGeneratorFile::class));
     }
 
-    public function ensureIdIsUnique(int $id, string $className, SmartFileInfo $smartFileInfo): void
+    public function ensureIdIsUnique(string $id, string $className, SmartFileInfo $smartFileInfo): void
     {
         if (! isset($this->idsByAbstractGeneratorFileClass[$className])) {
             $this->idsByAbstractGeneratorFileClass[$className][] = $id;
@@ -34,7 +34,7 @@ final class GeneratorFileGuard
         }
 
         throw new GeneratorException(sprintf(
-            'Id "%d" was already set for "%s" class. Pick an another one for "%s" file.',
+            'Id "%s" was already set for "%s" class. Pick an another one for "%s" file.',
             $id,
             $className,
             $smartFileInfo->getRealPath()

@@ -32,7 +32,7 @@ final class StatieConsoleApplication extends Application
 
     private function getPrettyVersion(): string
     {
-        $version = PrettyVersions::getVersion('symplify/statie');
+        $version = PrettyVersions::getVersion('drdplusinfo/statie');
 
         return $version->getPrettyVersion();
     }

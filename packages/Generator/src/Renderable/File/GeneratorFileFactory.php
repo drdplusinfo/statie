@@ -10,10 +10,10 @@ use Symplify\Statie\Utils\PathAnalyzer;
 final class GeneratorFileFactory
 {
     /**
-     * Matches "id: <25>"
+     * Matches "id: 2019-04-04"
      * @var string
      */
-    private const ID_PATTERN = '#^id:[\s]*(?<id>\d+)#m';
+    private const ID_PATTERN = '#^id:[\s]*(?<id>\S+)#m';
 
     /**
      * @var PathAnalyzer
@@ -74,12 +74,12 @@ final class GeneratorFileFactory
         );
     }
 
-    private function findAndGetValidId(SmartFileInfo $smartFileInfo, string $className): int
+    private function findAndGetValidId(SmartFileInfo $smartFileInfo, string $className): string
     {
         $match = Strings::match($smartFileInfo->getContents(), self::ID_PATTERN);
         $this->generatorFileGuard->ensureIdIsSet($smartFileInfo, $match);
 
-        $id = (int) $match['id'];
+        $id = (string) $match['id'];
         $this->generatorFileGuard->ensureIdIsUnique($id, $className, $smartFileInfo);
 
         return $id;

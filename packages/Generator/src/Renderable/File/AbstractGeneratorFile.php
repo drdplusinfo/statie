@@ -9,7 +9,7 @@ use Symplify\Statie\Renderable\File\AbstractFile;
 abstract class AbstractGeneratorFile extends AbstractFile
 {
     /**
-     * @var int
+     * @var string
      */
     private $id;
 
@@ -20,7 +20,7 @@ abstract class AbstractGeneratorFile extends AbstractFile
     private $rawContent;
 
     public function __construct(
-        int $id,
+        string $id,
         SmartFileInfo $smartFileInfo,
         string $relativeSource,
         string $filePath,
@@ -31,7 +31,7 @@ abstract class AbstractGeneratorFile extends AbstractFile
         parent::__construct($smartFileInfo, $relativeSource, $filePath, $filenameWithoutDate, $dateTime);
     }
 
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }
