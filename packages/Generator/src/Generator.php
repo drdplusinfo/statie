@@ -49,7 +49,8 @@ final class Generator
         StatieConfiguration $statieConfiguration,
         RenderableFilesProcessor $renderableFilesProcessor,
         GeneratorFileFactory $generatorFileFactory
-    ) {
+    )
+    {
         $this->generatorConfiguration = $generatorConfiguration;
         $this->fileFinder = $fileFinder;
         $this->statieConfiguration = $statieConfiguration;
@@ -67,7 +68,7 @@ final class Generator
         }
 
         foreach ($this->generatorConfiguration->getGeneratorElements() as $generatorElement) {
-            if (! is_dir($generatorElement->getPath())) {
+            if (!is_dir($generatorElement->getPath())) {
                 $this->reportMissingPath($generatorElement);
 
                 continue;

@@ -25,13 +25,14 @@ final class GeneratorRelatedItemsTest extends AbstractGeneratorTest
     {
         $this->generator->run();
         $posts = $this->statieConfiguration->getOption('posts');
-        $postWithRelatedItems = $posts[1];
+        $postWithRelatedItems = $posts['2017-01-01-1'];
 
         $relatedItems = $this->relatedItemsResolver->resolveForFile($postWithRelatedItems);
 
         $this->assertCount(3, $relatedItems);
 
-        $relatedItem = $relatedItems[1];
-        $this->assertSame('Statie 4: How to Create The Simplest Blog', $relatedItem['title']);
+        $this->assertSame($posts['2017-02-05-1']['title'], $relatedItems[0]['title']);
+        $this->assertSame($posts['2017-01-05-2']['title'], $relatedItems[1]['title']);
+        $this->assertSame($posts['2017-01-05-1']['title'], $relatedItems[2]['title']);
     }
 }

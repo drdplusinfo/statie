@@ -3,6 +3,7 @@
 namespace Symplify\Statie\Generator\Tests;
 
 use DateTimeInterface;
+use Symplify\Statie\Configuration\StatieConfiguration;
 use Symplify\Statie\Generator\Renderable\File\AbstractGeneratorFile;
 use Symplify\Statie\HttpKernel\StatieKernel;
 
@@ -25,9 +26,27 @@ final class GeneratorTest extends AbstractGeneratorTest
         foreach ($generatorFilesByType as $generatorFiles) {
             foreach ($generatorFiles as $key => $generatorFile) {
                 /** @var AbstractGeneratorFile $generatorFile */
-                $this->assertSame($key, $generatorFile->getId());
+                $this->assertSame((string)$key, $generatorFile->getId());
             }
         }
+    }
+
+    public function testIdsAreSorted(): void
+    {
+        $generatorFilesByType = $this->generator->run();
+        $expectedKeys = [
+            '2017-02-05-1',
+            '2017-01-05-2',
+            '2017-01-05-1',
+            '2017-01-01-1',
+            '2016-10-10-1',
+            '2016-01-02-1',
+        ];
+        self::assertSame($expectedKeys, array_keys($generatorFilesByType['posts']));
+
+        /** @var StatieConfiguration $statieConfiguration */
+        $statieConfiguration = self::$container->get(StatieConfiguration::class);
+        self::assertSame($expectedKeys, array_keys($statieConfiguration->getOption('posts')));
     }
 
     public function testPosts(): void

@@ -13,9 +13,18 @@ final class FileNameObjectSorter implements ObjectSorterInterface
      */
     public function sort(array $generatorFiles): array
     {
-        uasort($generatorFiles, function (AbstractFile $firstFile, AbstractFile $secondFile): int {
-            // from newest to oldest, Z to A
-            return strcmp($secondFile->getFilePath(), $firstFile->getFilePath());
+        uksort($generatorFiles, function ($firstFileIndex, $secondFileIndex) use ($generatorFiles): int {
+            $firstFile = $generatorFiles[$firstFileIndex];
+            $secondFile = $generatorFiles[$secondFileIndex];
+            $firstFileDate = $firstFile->getDate();
+            $secondFileDate = $secondFile->getDate();
+            if ($firstFileDate && $secondFileDate) {
+                $datesComparison = $secondFileDate <=> $firstFileDate;
+                if ($datesComparison !== 0) {
+                    return $datesComparison;
+                }
+            }
+            return strcmp((string)$secondFileIndex, (string)$firstFileIndex);
         });
 
         return $generatorFiles;
