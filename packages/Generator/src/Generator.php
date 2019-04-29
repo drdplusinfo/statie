@@ -42,13 +42,18 @@ final class Generator
      * @var GeneratorFileFactory
      */
     private $generatorFileFactory;
+    /**
+     * @var FileNameObjectSorter
+     */
+    private $fileNameObjectSorter;
 
     public function __construct(
         GeneratorConfiguration $generatorConfiguration,
         FileFinder $fileFinder,
         StatieConfiguration $statieConfiguration,
         RenderableFilesProcessor $renderableFilesProcessor,
-        GeneratorFileFactory $generatorFileFactory
+        GeneratorFileFactory $generatorFileFactory,
+        FileNameObjectSorter $fileNameObjectSorter
     )
     {
         $this->generatorConfiguration = $generatorConfiguration;
@@ -56,6 +61,7 @@ final class Generator
         $this->statieConfiguration = $statieConfiguration;
         $this->renderableFilesProcessor = $renderableFilesProcessor;
         $this->generatorFileFactory = $generatorFileFactory;
+        $this->fileNameObjectSorter = $fileNameObjectSorter;
     }
 
     /**
@@ -77,6 +83,7 @@ final class Generator
             $objects = $this->createObjectsFromFoundElements($generatorElement);
 
             // save them to property (for "related_items" option)
+            $objects = $this->fileNameObjectSorter->sort($objects);
             $this->statieConfiguration->addOption($generatorElement->getVariableGlobal(), $objects);
 
             $generatorElement->setObjects($objects);
