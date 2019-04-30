@@ -30,7 +30,7 @@ class PostsFilterProvider implements FilterProviderInterface
         foreach ($posts as $post) {
             $candidate = null;
             if ($post->getDate() < $currentPost->getDate()) {
-                $candidate = $previousPost;
+                $candidate = $post;
             } elseif ($post->getDate() == $currentPost->getDate() && $post->getId() < $currentPost->getId()) {
                 $candidate = $post;
             }
@@ -53,7 +53,7 @@ class PostsFilterProvider implements FilterProviderInterface
         foreach ($posts as $post) {
             $candidate = null;
             if ($post->getDate() > $currentPost->getDate()) {
-                $candidate = $nextPost;
+                $candidate = $post;
             } elseif ($post->getDate() == $currentPost->getDate() && $post->getId() > $currentPost->getId()) {
                 $candidate = $post;
             }
