@@ -5,6 +5,7 @@ namespace Symplify\Statie\Generator\Configuration;
 use Nette\Utils\FileSystem;
 use Symplify\Statie\Configuration\StatieConfiguration;
 use Symplify\Statie\Generator\FileNameObjectSorter;
+use Symplify\Statie\Generator\FilesComparator;
 use Symplify\Statie\Generator\Renderable\File\GeneratorFile;
 
 final class GeneratorElementFactory
@@ -18,11 +19,16 @@ final class GeneratorElementFactory
      * @var StatieConfiguration
      */
     private $statieConfiguration;
+    /**
+     * @var FilesComparator
+     */
+    private $filesComparator;
 
-    public function __construct(GeneratorElementGuard $generatorElementGuard, StatieConfiguration $statieConfiguration)
+    public function __construct(GeneratorElementGuard $generatorElementGuard, StatieConfiguration $statieConfiguration, FilesComparator $filesComparator)
     {
         $this->generatorElementGuard = $generatorElementGuard;
         $this->statieConfiguration = $statieConfiguration;
+        $this->filesComparator = $filesComparator;
     }
 
     /**
@@ -41,9 +47,9 @@ final class GeneratorElementFactory
             $configuration['layout'],
             $configuration['route_prefix'],
             $configuration['object'] ?? GeneratorFile::class,
-            isset($configuration['object_sorter']) ? new $configuration['object_sorter']() : new FileNameObjectSorter(),
+            isset($configuration['object_sorter']) ? new $configuration['object_sorter']() : new FileNameObjectSorter($this->filesComparator),
             // headline linker is on by default
-            isset($configuration['has_headline_anchors']) ? (bool) $configuration['has_headline_anchors'] : true
+            isset($configuration['has_headline_anchors']) ? (bool)$configuration['has_headline_anchors'] : true
         );
     }
 

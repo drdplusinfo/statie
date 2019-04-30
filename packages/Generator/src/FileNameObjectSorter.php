@@ -8,6 +8,16 @@ use Symplify\Statie\Renderable\File\AbstractFile;
 final class FileNameObjectSorter implements ObjectSorterInterface
 {
     /**
+     * @var FilesComparator
+     */
+    private $filesComparator;
+
+    public function __construct(FilesComparator $filesComparator)
+    {
+        $this->filesComparator = $filesComparator;
+    }
+
+    /**
      * @param AbstractFile[] $generatorFiles
      * @return AbstractFile[]
      */
@@ -16,17 +26,8 @@ final class FileNameObjectSorter implements ObjectSorterInterface
         uksort($generatorFiles, function ($firstFileIndex, $secondFileIndex) use ($generatorFiles): int {
             $firstFile = $generatorFiles[$firstFileIndex];
             $secondFile = $generatorFiles[$secondFileIndex];
-            $firstFileDate = $firstFile->getDate();
-            $secondFileDate = $secondFile->getDate();
-            if ($firstFileDate && $secondFileDate) {
-                $datesComparison = $secondFileDate <=> $firstFileDate;
-                if ($datesComparison !== 0) {
-                    return $datesComparison;
-                }
-            }
-            return strcmp((string)$secondFileIndex, (string)$firstFileIndex);
+            return $this->filesComparator->compare($secondFile, $firstFile, $secondFileIndex, $firstFileIndex);
         });
-
         return $generatorFiles;
     }
 }

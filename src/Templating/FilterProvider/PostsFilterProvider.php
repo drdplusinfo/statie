@@ -2,10 +2,21 @@
 namespace Symplify\Statie\Templating\FilterProvider;
 
 use Symplify\Statie\Contract\Templating\FilterProviderInterface;
+use Symplify\Statie\Generator\FilesComparator;
 use Symplify\Statie\Generator\Renderable\File\AbstractGeneratorFile;
 
 class PostsFilterProvider implements FilterProviderInterface
 {
+    /**
+     * @var FilesComparator
+     */
+    private $filesComparator;
+
+    public function __construct(FilesComparator $filesComparator)
+    {
+        $this->filesComparator = $filesComparator;
+    }
+
     public function provide(): array
     {
         return [
@@ -28,13 +39,10 @@ class PostsFilterProvider implements FilterProviderInterface
         /** @var AbstractGeneratorFile $previousPost */
         $previousPost = null;
         foreach ($posts as $post) {
-            $candidate = null;
-            if ($post->getDate() < $currentPost->getDate()) {
-                $candidate = $post;
-            } elseif ($post->getDate() == $currentPost->getDate() && $post->getId() < $currentPost->getId()) {
-                $candidate = $post;
-            }
-            if ($candidate && (!$previousPost || $previousPost->getDate() > $candidate->getDate())) {
+            $candidate = $this->filesComparator->compare($post, $currentPost, $post->getId(), $currentPost->getId()) < 0
+                ? $post
+                : null;
+            if ($candidate && $this->filesComparator->compare($previousPost, $candidate) < 0) { // candidate is newer than previous post
                 $previousPost = $candidate;
             }
         }
@@ -51,13 +59,10 @@ class PostsFilterProvider implements FilterProviderInterface
         /** @var AbstractGeneratorFile $nextPost */
         $nextPost = null;
         foreach ($posts as $post) {
-            $candidate = null;
-            if ($post->getDate() > $currentPost->getDate()) {
-                $candidate = $post;
-            } elseif ($post->getDate() == $currentPost->getDate() && $post->getId() > $currentPost->getId()) {
-                $candidate = $post;
-            }
-            if ($candidate && (!$nextPost || $nextPost->getDate() > $candidate->getDate())) {
+            $candidate = $this->filesComparator->compare($post, $currentPost, $post->getId(), $currentPost->getId()) > 0
+                ? $post
+                : null;
+            if ($candidate && $this->filesComparator->compare($nextPost, $candidate) > 0) { // candidate is older than next post
                 $nextPost = $candidate;
             }
         }
