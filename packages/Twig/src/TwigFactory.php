@@ -10,8 +10,6 @@ use Twig\Loader\ArrayLoader;
 use Twig\Loader\LoaderInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use Twig_Filter;
-use Twig_Function;
 
 final class TwigFactory
 {
@@ -82,8 +80,8 @@ final class TwigFactory
     private function loadLatteFilters(Environment $twigEnvironment): void
     {
         foreach ($this->filterExecutor->getAll() as $name => $filter) {
-            $twigEnvironment->addFilter(new Twig_Filter($name, $this->filterExecutor->{$filter}));
-            $twigEnvironment->addFunction(new Twig_Function($name, $this->filterExecutor->{$filter}));
+            $twigEnvironment->addFilter(new TwigFilter($name, $this->filterExecutor->{$filter}));
+            $twigEnvironment->addFunction(new TwigFunction($name, $this->filterExecutor->{$filter}));
         }
     }
 }
