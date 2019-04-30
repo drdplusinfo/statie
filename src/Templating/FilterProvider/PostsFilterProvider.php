@@ -9,21 +9,21 @@ class PostsFilterProvider implements FilterProviderInterface
     public function provide(): array
     {
         return [
-            'previous_post' => function (AbstractGeneratorFile $currentPost, array $posts) {
-                return $this->findPreviousPost($currentPost, $posts);
+            'previous_post' => function (array $posts, AbstractGeneratorFile $currentPost) {
+                return $this->findPreviousPost($posts, $currentPost);
             },
-            'next_post' => function (AbstractGeneratorFile $currentPost, array $posts) {
-                return $this->findNextPost($currentPost, $posts);
+            'next_post' => function (array $posts, AbstractGeneratorFile $currentPost) {
+                return $this->findNextPost($posts, $currentPost);
             },
         ];
     }
 
     /**
-     * @param AbstractGeneratorFile $currentPost
      * @param array|AbstractGeneratorFile[] $posts
+     * @param AbstractGeneratorFile $currentPost
      * @return AbstractGeneratorFile|null
      */
-    private function findPreviousPost(AbstractGeneratorFile $currentPost, array $posts): ?AbstractGeneratorFile
+    private function findPreviousPost(array $posts, AbstractGeneratorFile $currentPost): ?AbstractGeneratorFile
     {
         /** @var AbstractGeneratorFile $previousPost */
         $previousPost = null;
@@ -42,11 +42,11 @@ class PostsFilterProvider implements FilterProviderInterface
     }
 
     /**
-     * @param AbstractGeneratorFile $currentPost
      * @param array|AbstractGeneratorFile[] $posts
+     * @param AbstractGeneratorFile $currentPost
      * @return AbstractGeneratorFile|null
      */
-    private function findNextPost(AbstractGeneratorFile $currentPost, array $posts): ?AbstractGeneratorFile
+    private function findNextPost(array $posts, AbstractGeneratorFile $currentPost): ?AbstractGeneratorFile
     {
         /** @var AbstractGeneratorFile $nextPost */
         $nextPost = null;
