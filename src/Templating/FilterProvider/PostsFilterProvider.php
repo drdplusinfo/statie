@@ -42,8 +42,10 @@ class PostsFilterProvider implements FilterProviderInterface
             $candidate = $this->filesComparator->compare($post, $currentPost, $post->getId(), $currentPost->getId()) < 0
                 ? $post
                 : null;
-            if ($candidate && $this->filesComparator->compare($previousPost, $candidate) < 0) { // candidate is newer than previous post
-                $previousPost = $candidate;
+            if ($candidate) {
+                if (!$previousPost || $this->filesComparator->compare($previousPost, $candidate) < 0) { // candidate is newer than previous post
+                    $previousPost = $candidate;
+                }
             }
         }
         return $previousPost;
@@ -62,8 +64,10 @@ class PostsFilterProvider implements FilterProviderInterface
             $candidate = $this->filesComparator->compare($post, $currentPost, $post->getId(), $currentPost->getId()) > 0
                 ? $post
                 : null;
-            if ($candidate && $this->filesComparator->compare($nextPost, $candidate) > 0) { // candidate is older than next post
-                $nextPost = $candidate;
+            if ($candidate) {
+                if (!$nextPost || $this->filesComparator->compare($nextPost, $candidate) > 0) { // candidate is older than next post
+                    $nextPost = $candidate;
+                }
             }
         }
         return $nextPost;
