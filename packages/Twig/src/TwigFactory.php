@@ -8,6 +8,8 @@ use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\LoaderInterface;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 use Twig_Filter;
 use Twig_Function;
 
@@ -66,8 +68,8 @@ final class TwigFactory
 
         foreach ($this->filterProviders as $filterProvider) {
             foreach ($filterProvider->provide() as $name => $filter) {
-                $twigEnvironment->addFilter(new Twig_Filter($name, $filter));
-                $twigEnvironment->addFunction(new Twig_Function($name, $filter));
+                $twigEnvironment->addFilter(new TwigFilter($name, $filter));
+                $twigEnvironment->addFunction(new TwigFunction($name, $filter));
             }
         }
 
