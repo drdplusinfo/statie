@@ -59,13 +59,13 @@ final class GenerateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $source = (string) $input->getArgument(self::OPTION_SOURCE);
-        $output = (string) $input->getOption(self::OPTION_OUTPUT);
+        $source = (string)$input->getArgument(self::OPTION_SOURCE);
+        $output = (string)$input->getOption(self::OPTION_OUTPUT);
 
         $this->statieApplication->run($source, $output);
 
         $this->symfonyStyle->success(
-            sprintf('Web was generated from "%s" source to "%s" output', $source, $output)
+            sprintf('(%s) Web was generated from "%s" source to "%s" output', date(DATE_ATOM), $source, $output)
         );
 
         return ShellCode::SUCCESS;
