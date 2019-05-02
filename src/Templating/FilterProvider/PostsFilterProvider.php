@@ -39,11 +39,15 @@ class PostsFilterProvider implements FilterProviderInterface
         /** @var AbstractGeneratorFile $previousPost */
         $previousPost = null;
         foreach ($posts as $post) {
+            // candidate is older than current post
             $candidate = $this->filesComparator->compare($post, $currentPost, $post->getId(), $currentPost->getId()) < 0
                 ? $post
                 : null;
             if ($candidate) {
-                if (!$previousPost || $this->filesComparator->compare($previousPost, $candidate) < 0) { // candidate is newer than previous post
+                if (!$previousPost
+                    // candidate is newer than previous post
+                    || $this->filesComparator->compare($candidate, $previousPost, $candidate->getId(), $previousPost->getId()) > 0
+                ) {
                     $previousPost = $candidate;
                 }
             }
@@ -61,11 +65,15 @@ class PostsFilterProvider implements FilterProviderInterface
         /** @var AbstractGeneratorFile $nextPost */
         $nextPost = null;
         foreach ($posts as $post) {
+            // candidate is newer than current post
             $candidate = $this->filesComparator->compare($post, $currentPost, $post->getId(), $currentPost->getId()) > 0
                 ? $post
                 : null;
             if ($candidate) {
-                if (!$nextPost || $this->filesComparator->compare($nextPost, $candidate) > 0) { // candidate is older than next post
+                if (!$nextPost
+                    // candidate is older than next post
+                    || $this->filesComparator->compare($candidate, $nextPost, $candidate->getId(), $nextPost->getId()) < 0
+                ) {
                     $nextPost = $candidate;
                 }
             }
