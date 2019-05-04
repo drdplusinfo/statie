@@ -17,6 +17,7 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
     public function __construct(ParsedownExtra $parsedownExtra)
     {
         $this->parsedownExtra = $parsedownExtra;
+        $this->parsedownExtra->setBreaksEnabled(true); // line breaks are kept as <br>
     }
 
     /**
@@ -34,6 +35,7 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
 
     /**
      * @param AbstractFile[] $files
+     * @param GeneratorElement $generatorElement
      * @return AbstractFile[]
      */
     public function decorateFilesWithGeneratorElement(array $files, GeneratorElement $generatorElement): array
@@ -86,7 +88,7 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
     private function toSimpleHtml(string $markdown): string
     {
         $html = $this->parsedownExtra->text($markdown);
-        return preg_replace('~^<p>(.*)</p>$~', '$1', $html);
+        return preg_replace('~^<p>(.*)</p>$~', '$1', $html); //remove unwanted all-wrapping paragraph
     }
 
     private function decorateContent(AbstractFile $file): void
