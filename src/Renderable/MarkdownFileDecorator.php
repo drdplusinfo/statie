@@ -114,11 +114,10 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
 </html>
 HTML
         );
-        $fp = $document->saveHTML();
         $anchors = $document->getElementsByTagName('a');
         /** @var Element $anchor */
         foreach ($anchors as $anchor) {
-            if (preg_match('~^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})-(?<rest>.+)[.]md$~', $anchor->getAttribute('href'), $matches)) {
+            if (preg_match('~^(../\d{4}/)(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})-(?<rest>.+)[.]md$~', $anchor->getAttribute('href'), $matches)) {
                 $updatedLink = sprintf('../../../../%s/%s/%s/%s/', $matches['year'], $matches['month'], $matches['day'], $matches['rest']);
                 $anchor->setAttribute('href', $updatedLink);
             }

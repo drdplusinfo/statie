@@ -90,11 +90,11 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
 
     public function testLocalLinksToMarkdownFilesAreTurnedToValidRoute(): void
     {
-        $fileInfo = new SmartFileInfo(__DIR__ . '/MarkdownFileDecoratorSource/fileWithLinkToMarkdownFile.md');
+        $fileInfo = new SmartFileInfo(__DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-02-fileWithLinkToMarkdownFile.md');
         $file = $this->fileFactory->createFromFileInfo($fileInfo);
 
         $this->markdownFileDecorator->decorateFiles([$file]);
 
-        $this->assertSame('<p><a href="../../../../2019/01/01/bar/">foo</a></p>', $file->getContent());
+        $this->assertSame('<p><a href="../../../../2018/01/01/bar/">foo</a></p>', $file->getContent());
     }
 }
