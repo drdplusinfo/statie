@@ -9,7 +9,7 @@
         "php": "^7.1",
         "erusev/parsedown-extra": "^0.7.1",
         "erusev/parsedown": "^1.7",
-        "latte/latte": "^2.4",
+        "latte/latte": "^2.5",
         "guzzlehttp/guzzle": "^6.3",
         "J7mbo/twitter-api-php": "^1.0",
         "nette/finder": "^2.4",
