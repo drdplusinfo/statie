@@ -2,7 +2,6 @@
 
 namespace Symplify\Statie\Console;
 
-use Jean85\PrettyVersions;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -18,7 +17,7 @@ final class StatieConsoleApplication extends Application
      */
     public function __construct(array $commands)
     {
-        parent::__construct('Statie', $this->getPrettyVersion());
+        parent::__construct('Statie');
         $this->addCommands($commands);
     }
 
@@ -28,13 +27,6 @@ final class StatieConsoleApplication extends Application
         $this->addExtraOptions($inputDefinition);
 
         return $inputDefinition;
-    }
-
-    private function getPrettyVersion(): string
-    {
-        $version = PrettyVersions::getVersion('drdplusinfo/statie');
-
-        return $version->getPrettyVersion();
     }
 
     private function addExtraOptions(InputDefinition $inputDefinition): void
