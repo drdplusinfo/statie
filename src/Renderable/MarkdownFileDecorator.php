@@ -2,6 +2,7 @@
 
 namespace Symplify\Statie\Renderable;
 
+use Granam\String\StringTools;
 use Gt\Dom\Element;
 use Gt\Dom\HTMLDocument;
 use ParsedownExtra;
@@ -117,8 +118,16 @@ HTML
         $anchors = $document->getElementsByTagName('a');
         /** @var Element $anchor */
         foreach ($anchors as $anchor) {
-            if (preg_match('~^(../\d{4}/)(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})-(?<rest>.+)[.]md$~', $anchor->getAttribute('href'), $matches)) {
+            if (preg_match(
+                '~^(../\d{4}/)(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})-(?<rest>.+)[.]md(?<anchor>#[^#]+)?$~',
+                $anchor->getAttribute('href'),
+                $matches)
+            ) {
                 $updatedLink = sprintf('../../../../%s/%s/%s/%s/', $matches['year'], $matches['month'], $matches['day'], $matches['rest']);
+                if ($matches['anchor']) {
+                    $hashAnchor = str_replace('_', '-', StringTools::toSnakeCaseId($matches['anchor']));
+                    $updatedLink .= '#' . $hashAnchor;
+                }
                 $anchor->setAttribute('href', $updatedLink);
             }
         }

@@ -95,6 +95,6 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
 
         $this->markdownFileDecorator->decorateFiles([$file]);
 
-        $this->assertSame('<p><a href="../../../../2018/01/01/bar/">foo</a></p>', $file->getContent());
+        $this->assertSame('<p><a href="../../../../2018/01/01/bar/#cas-klidu">foo</a></p>', $file->getContent());
     }
 }
