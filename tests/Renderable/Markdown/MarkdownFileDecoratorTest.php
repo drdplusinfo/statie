@@ -88,13 +88,32 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
         $this->assertSame('<strong>Hey</strong>', $file->getConfiguration()['perex']);
     }
 
-    public function testLocalLinksToMarkdownFilesAreTurnedToValidRoute(): void
+    /**
+     * @dataProvider provideLinkToLocalFile
+     * @param string $filePath
+     * @param string $expectedOutput
+     */
+    public function testLocalLinksToMarkdownFilesAreTurnedToValidRoute(string $filePath, string $expectedOutput): void
     {
-        $fileInfo = new SmartFileInfo(__DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-02-fileWithLinkToMarkdownFile.md');
+        $fileInfo = new SmartFileInfo($filePath);
         $file = $this->fileFactory->createFromFileInfo($fileInfo);
 
         $this->markdownFileDecorator->decorateFiles([$file]);
 
-        $this->assertSame('<p><a href="../../../../2018/01/01/bar/#cas-klidu">foo</a></p>', $file->getContent());
+        $this->assertSame($expectedOutput, $file->getContent());
+    }
+
+    public function provideLinkToLocalFile(): array
+    {
+        return [
+            'file in same dir' => [
+                __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-02-fileWithLinkToMarkdownFileInCurrentDir.md',
+                '<p><a href="../../../../2019/01/03/fileWithLinkToMarkdownFileInDifferentDir/#coze">foo</a></p>'
+            ],
+            'file in another dir' => [
+                __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-03-fileWithLinkToMarkdownFileInDifferentDir.md',
+                '<p><a href="../../../../2018/01/01/bar/#cas-klidu">foo</a></p>'
+            ],
+        ];
     }
 }

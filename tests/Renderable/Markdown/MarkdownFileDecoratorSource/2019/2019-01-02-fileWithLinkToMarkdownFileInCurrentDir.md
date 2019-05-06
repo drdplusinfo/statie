@@ -1,0 +1,1 @@
+[foo](2019-01-03-fileWithLinkToMarkdownFileInDifferentDir.md#Cože)

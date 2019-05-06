@@ -119,7 +119,7 @@ HTML
         /** @var Element $anchor */
         foreach ($anchors as $anchor) {
             if (preg_match(
-                '~^(../\d{4}/)(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})-(?<rest>.+)[.]md(?<anchor>#[^#]+)?$~',
+                '~^(../\d{4}/)?(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})-(?<rest>.+)[.]md(?<anchor>#[^#]+)?$~',
                 $anchor->getAttribute('href'),
                 $matches)
             ) {
