@@ -7,6 +7,7 @@
     ],
     "require": {
         "php": "^7.1",
+        "ext-dom": "*",
         "erusev/parsedown-extra": "^0.7.1",
         "erusev/parsedown": "^1.7",
         "latte/latte": "^2.5",
@@ -24,7 +25,8 @@
         "symfony/finder": "^3.4|^4.1",
         "symfony/yaml": "^3.4|^4.1",
         "symplify/package-builder": "^5.4.9",
-        "symfony/dotenv": "^4.2"
+        "symfony/dotenv": "^4.2",
+        "phpgt/dom": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5|^8.0"

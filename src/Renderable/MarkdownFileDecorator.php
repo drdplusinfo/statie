@@ -2,6 +2,8 @@
 
 namespace Symplify\Statie\Renderable;
 
+use Gt\Dom\Element;
+use Gt\Dom\HTMLDocument;
 use ParsedownExtra;
 use Symplify\Statie\Contract\Renderable\FileDecoratorInterface;
 use Symplify\Statie\Generator\Configuration\GeneratorElement;
@@ -94,7 +96,38 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
     private function decorateContent(AbstractFile $file): void
     {
         $htmlContent = $this->parsedownExtra->text($file->getContent());
+        $htmlContent = $this->modifyLocalLinks($htmlContent);
 
         $file->changeContent($htmlContent);
+    }
+
+    private function modifyLocalLinks(string $html): string
+    {
+        $bodyAdded = true;
+        if (strpos($html, '<body>') === false) {
+            $html = "<body>$html</body>";
+        }
+        $document = new HTMLDocument(<<<HTML
+<!DOCTYPE html>
+<html lang="cs">
+{$html}
+</html>
+HTML
+        );
+        $fp = $document->saveHTML();
+        $anchors = $document->getElementsByTagName('a');
+        /** @var Element $anchor */
+        foreach ($anchors as $anchor) {
+            if (preg_match('~^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})-(?<rest>.+)[.]md$~', $anchor->getAttribute('href'), $matches)) {
+                $updatedLink = sprintf('../../../../%s/%s/%s/%s/', $matches['year'], $matches['month'], $matches['day'], $matches['rest']);
+                $anchor->setAttribute('href', $updatedLink);
+            }
+        }
+        if ($bodyAdded) {
+            $htmlNode = $document->body;
+        } else {
+            $htmlNode = $document->getElementsByTagName('html')[0];
+        }
+        return $htmlNode->prop_get_innerHTML();
     }
 }

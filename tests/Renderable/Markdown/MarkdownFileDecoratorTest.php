@@ -87,4 +87,14 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
 
         $this->assertSame('<strong>Hey</strong>', $file->getConfiguration()['perex']);
     }
+
+    public function testLocalLinksToMarkdownFilesAreTurnedToValidRoute(): void
+    {
+        $fileInfo = new SmartFileInfo(__DIR__ . '/MarkdownFileDecoratorSource/fileWithLinkToMarkdownFile.md');
+        $file = $this->fileFactory->createFromFileInfo($fileInfo);
+
+        $this->markdownFileDecorator->decorateFiles([$file]);
+
+        $this->assertSame('<p><a href="../../../../2019/01/01/bar/">foo</a></p>', $file->getContent());
+    }
 }
