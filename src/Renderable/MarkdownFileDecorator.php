@@ -124,7 +124,7 @@ HTML
                 $matches)
             ) {
                 $updatedLink = sprintf('../../../../%s/%s/%s/%s/', $matches['year'], $matches['month'], $matches['day'], $matches['rest']);
-                if ($matches['anchor']) {
+                if (!empty($matches['anchor'])) {
                     $hashAnchor = str_replace('_', '-', StringTools::toSnakeCaseId($matches['anchor']));
                     $updatedLink .= '#' . $hashAnchor;
                 }

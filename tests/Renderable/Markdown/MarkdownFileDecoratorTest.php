@@ -108,7 +108,7 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
         return [
             'file in same dir' => [
                 __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-02-fileWithLinkToMarkdownFileInCurrentDir.md',
-                '<p><a href="../../../../2019/01/03/fileWithLinkToMarkdownFileInDifferentDir/#coze">foo</a></p>'
+                '<p><a href="../../../../2019/01/03/fileWithLinkToMarkdownFileInDifferentDir/">foo</a></p>'
             ],
             'file in another dir' => [
                 __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-03-fileWithLinkToMarkdownFileInDifferentDir.md',
