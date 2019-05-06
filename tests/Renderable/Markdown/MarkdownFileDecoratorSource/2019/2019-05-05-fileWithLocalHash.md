@@ -1,0 +1,1 @@
+[local hash](#Na_zdařbůh)

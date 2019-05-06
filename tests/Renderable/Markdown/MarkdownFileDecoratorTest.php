@@ -114,6 +114,10 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
                 __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-03-fileWithLinkToMarkdownFileInDifferentDir.md',
                 '<p><a href="../../../../2018/01/01/bar/#cas-klidu">foo</a></p>'
             ],
+            'file in local hash' => [
+                __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-05-05-fileWithLocalHash.md',
+                '<p><a href="#na-zdarbuh">local hash</a></p>'
+            ],
         ];
     }
 }
