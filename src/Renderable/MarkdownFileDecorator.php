@@ -85,6 +85,10 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
             return;
         }
         $configuration['perex'] = $this->toSimpleHtml($configuration['perex']);
+        if (!empty($configuration['image'])) {
+            $imageHtml = $this->getImageForPerex($configuration['image'], $configuration['title'] ?? '');
+            $configuration['perex'] = $imageHtml . $configuration['perex'];
+        }
         $file->addConfiguration($configuration);
     }
 
@@ -92,6 +96,14 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
     {
         $html = $this->parsedownExtra->text($markdown);
         return preg_replace('~^<p>(.*)</p>$~', '$1', $html); //remove unwanted all-wrapping paragraph
+    }
+
+    private function getImageForPerex(string $image, string $alternative)
+    {
+        $escapedAlternative = htmlentities($alternative);
+        return <<<HTML
+<img src="{$image}" alt="{$escapedAlternative}">
+HTML;
     }
 
     private function decorateContent(AbstractFile $file): void

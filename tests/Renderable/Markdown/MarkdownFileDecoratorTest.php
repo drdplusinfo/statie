@@ -86,6 +86,13 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
         $this->markdownFileDecorator->decorateFiles([$file]);
 
         $this->assertSame('<strong>Hey</strong>', $file->getConfiguration()['perex']);
+
+        $file->addConfiguration([
+            'image' => 'foo.png',
+            'title' => 'Bar',
+        ]);
+        $this->markdownFileDecorator->decorateFiles([$file]);
+        $this->assertSame('<img src="foo.png" alt="Bar"><strong>Hey</strong>', $file->getConfiguration()['perex']);
     }
 
     /**
@@ -108,15 +115,15 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
         return [
             'file in same dir' => [
                 __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-02-fileWithLinkToMarkdownFileInCurrentDir.md',
-                '<p><a href="../../../../2019/01/03/fileWithLinkToMarkdownFileInDifferentDir/">foo</a></p>'
+                '<p><a href="../../../../2019/01/03/fileWithLinkToMarkdownFileInDifferentDir/">foo</a></p>',
             ],
             'file in another dir' => [
                 __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-03-fileWithLinkToMarkdownFileInDifferentDir.md',
-                '<p><a href="../../../../2018/01/01/bar/#cas-klidu">foo</a></p>'
+                '<p><a href="../../../../2018/01/01/bar/#cas-klidu">foo</a></p>',
             ],
             'file in local hash' => [
                 __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-05-05-fileWithLocalHash.md',
-                '<p><a href="#na-zdarbuh">local hash</a></p>'
+                '<p><a href="#na-zdarbuh">local hash</a></p>',
             ],
         ];
     }
