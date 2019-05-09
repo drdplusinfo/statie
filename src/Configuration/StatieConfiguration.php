@@ -94,6 +94,7 @@ final class StatieConfiguration
     }
 
     /**
+     * @param string $name
      * @param mixed $value
      */
     public function addOption(string $name, $value): void
@@ -102,6 +103,7 @@ final class StatieConfiguration
     }
 
     /**
+     * @param string $name
      * @return mixed|null
      */
     public function getOption(string $name)
