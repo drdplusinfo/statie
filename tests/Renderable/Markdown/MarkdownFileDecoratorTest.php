@@ -89,10 +89,11 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
 
         $file->addConfiguration([
             'image' => 'foo.png',
+            'image_title' => 'Baz',
             'title' => 'Bar',
         ]);
         $this->markdownFileDecorator->decorateFiles([$file]);
-        $this->assertSame('<img src="foo.png" alt="Bar"><strong>Hey</strong>', $file->getConfiguration()['perex']);
+        $this->assertSame('<img src="foo.png" alt="Bar" title="Baz"><strong>Hey</strong>', $file->getConfiguration()['perex']);
     }
 
     /**

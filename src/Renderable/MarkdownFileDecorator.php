@@ -86,7 +86,7 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
         }
         $configuration['perex'] = $this->toSimpleHtml($configuration['perex']);
         if (!empty($configuration['image'])) {
-            $imageHtml = $this->getImageForPerex($configuration['image'], $configuration['title'] ?? '');
+            $imageHtml = $this->getImageForPerex($configuration['image'], $configuration['title'] ?? '', $configuration['image_title'] ?? '');
             $configuration['perex'] = $imageHtml . $configuration['perex'];
         }
         $file->addConfiguration($configuration);
@@ -98,11 +98,12 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
         return preg_replace('~^<p>(.*)</p>$~', '$1', $html); //remove unwanted all-wrapping paragraph
     }
 
-    private function getImageForPerex(string $image, string $alternative)
+    private function getImageForPerex(string $image, string $alternative, string $title): string
     {
         $escapedAlternative = htmlentities($alternative);
+        $escapedTitle = htmlentities($title);
         return <<<HTML
-<img src="{$image}" alt="{$escapedAlternative}">
+<img src="{$image}" alt="{$escapedAlternative}" title="{$escapedTitle}">
 HTML;
     }
 

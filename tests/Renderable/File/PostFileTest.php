@@ -109,8 +109,11 @@ class PostFileTest extends AbstractKernelTestCase
     {
         $post = $this->createPostFileFromFileInfo(new SmartFileInfo(__DIR__ . '/PostsSource/2017-06-16-very_short_post.md'));
         self::assertNull($post->getImage());
-        $post->addConfiguration(['image' => 'rainbow_pony_on_steroids.png']);
+        self::assertNull($post->getImageTitle());
+        $post->addConfiguration(['image' => 'rainbow_pony_on_steroids.png', 'image_title' => 'Wanna fly?']);
         self::assertSame('rainbow_pony_on_steroids.png', $post->getImage());
         self::assertSame('rainbow_pony_on_steroids.png', $post['image']);
+        self::assertSame('Wanna fly?', $post->getImageTitle());
+        self::assertSame('Wanna fly?', $post['image_title']);
     }
 }
