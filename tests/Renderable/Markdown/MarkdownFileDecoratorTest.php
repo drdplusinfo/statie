@@ -96,6 +96,20 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
         $this->assertSame('<img src="foo.png" alt="Bar" title="Baz"><strong>Hey</strong>', $file->getConfiguration()['perex']);
     }
 
+    public function testMarkdownImageAuthor(): void
+    {
+        $fileInfo = new SmartFileInfo(__DIR__ . '/MarkdownFileDecoratorSource/someFile.md');
+        $file = $this->fileFactory->createFromFileInfo($fileInfo);
+
+        $file->addConfiguration([
+            'image_author' => '**Foo** *Bar* [baz](qux)',
+        ]);
+
+        $this->markdownFileDecorator->decorateFiles([$file]);
+
+        $this->assertSame('<strong>Foo</strong> <em>Bar</em> <a href="qux">baz</a>', $file->getConfiguration()['image_author']);
+    }
+
     /**
      * @dataProvider provideLinkToLocalFile
      * @param string $filePath

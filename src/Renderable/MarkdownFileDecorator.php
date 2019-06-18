@@ -65,6 +65,7 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
 
         $this->decorateTitle($file);
         $this->decoratePerex($file);
+        $this->decorateImageAuthor($file);
         $this->decorateContent($file);
     }
 
@@ -105,6 +106,16 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
         return <<<HTML
 <img src="{$image}" alt="{$escapedAlternative}" title="{$escapedTitle}">
 HTML;
+    }
+
+    private function decorateImageAuthor(AbstractFile $file)
+    {
+        $configuration = $file->getConfiguration();
+        if (($configuration['image_author'] ?? '') === '') {
+            return;
+        }
+        $configuration['image_author'] = $this->toSimpleHtml($configuration['image_author']);
+        $file->addConfiguration($configuration);
     }
 
     private function decorateContent(AbstractFile $file): void
