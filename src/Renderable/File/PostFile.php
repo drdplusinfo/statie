@@ -62,6 +62,11 @@ final class PostFile extends AbstractGeneratorFile implements \ArrayAccess
         return $this->configuration['image_title'] ?? null;
     }
 
+    public function getImageAuthor(): ?string
+    {
+        return $this->configuration['image_author'] ?? null;
+    }
+
     public function getTitle(): ?string
     {
         return $this->offsetGet('title');
