@@ -12,7 +12,7 @@
         "erusev/parsedown": "^1.7",
         "latte/latte": "^2.5",
         "guzzlehttp/guzzle": "^6.3",
-        "J7mbo/twitter-api-php": "^1.0",
+        "j7mbo/twitter-api-php": "^1.0",
         "nette/finder": "^2.4",
         "nette/utils": "^2.5|^3.0",
         "tracy/tracy": "^2.5",
