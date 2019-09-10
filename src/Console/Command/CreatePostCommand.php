@@ -48,7 +48,8 @@ final class CreatePostCommand extends Command
         GeneratorConfiguration $generatorConfiguration,
         string $postTemplatePath,
         CreatePostFileSystem $createPostFileSystem
-    ) {
+    )
+    {
         parent::__construct();
         $this->symfonyStyle = $symfonyStyle;
         $this->generatorConfiguration = $generatorConfiguration;
@@ -65,7 +66,7 @@ final class CreatePostCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $title = (string) $input->getArgument('title');
+        $title = (string)$input->getArgument('title');
 
         $postGeneratorElement = $this->getPostGeneratorElementConfiguration();
         $this->ensurePostsPathExists($postGeneratorElement);
@@ -127,19 +128,21 @@ final class CreatePostCommand extends Command
         return str_replace(array_keys($variables), array_values($variables), $content);
     }
 
-    private function resolveNextPostIdFromPath(GeneratorElement $generatorElement): int
+    private function resolveNextPostIdFromPath(GeneratorElement $generatorElement): string
     {
-        $highestId = 0;
+        $webalizedDate = date('Y-m-d');
+        $highestSequence = 0;
 
         foreach ($this->createPostFileSystem->findMarkdownFilesInGeneratorElement($generatorElement) as $postFileInfo) {
-            $match = Strings::match($postFileInfo->getContents(), '#^id: (?<id>\d+)$#m');
-            if ($match['id']) {
-                $currentId = (int) $match['id'];
-                $highestId = max($highestId, $currentId);
+            $match = Strings::match($postFileInfo->getContents(), "#^id: $webalizedDate-(?<sequence>\d+)$#m");
+            if ($match['sequence']) {
+                $currentSequence = (int)$match['sequence'];
+                $highestSequence = max($highestSequence, $currentSequence);
             }
         }
+        $highestSequence++;
 
-        return $highestId + 1;
+        return "$webalizedDate-$highestSequence";
     }
 
     /**
