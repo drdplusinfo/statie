@@ -6,6 +6,7 @@ use Granam\String\StringTools;
 use Gt\Dom\Element;
 use Gt\Dom\HTMLDocument;
 use ParsedownExtra;
+use Symplify\Statie\Configuration\OptionsInterface;
 use Symplify\Statie\Contract\Renderable\FileDecoratorInterface;
 use Symplify\Statie\Generator\Configuration\GeneratorElement;
 use Symplify\Statie\Renderable\File\AbstractFile;
@@ -16,11 +17,16 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
      * @var ParsedownExtra
      */
     private $parsedownExtra;
+    /**
+     * @var OptionsInterface
+     */
+    private $options;
 
-    public function __construct(ParsedownExtra $parsedownExtra)
+    public function __construct(ParsedownExtra $parsedownExtra, OptionsInterface $options)
     {
         $this->parsedownExtra = $parsedownExtra;
         $this->parsedownExtra->setBreaksEnabled(true); // line breaks are kept as <br>
+        $this->options = $options;
     }
 
     /**
@@ -85,11 +91,20 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
         if (($configuration['perex'] ?? '') === '') {
             return;
         }
-        $configuration['perex'] = $this->toSimpleHtml($configuration['perex']);
+        $perextTextContent = $this->toSimpleHtml($configuration['perex']);
+        $imageHtml = '';
         if (!empty($configuration['image'])) {
             $imageHtml = $this->getImageForPerex($configuration['image'], $configuration['title'] ?? '', $configuration['image_title'] ?? '');
-            $configuration['perex'] = $imageHtml . $configuration['perex'];
         }
+        $configuration['perex'] = <<<HTML
+<table>
+<tbody>
+  <tr>
+    <td>$imageHtml</td><td>$perextTextContent</td>
+  </tr>
+</tbody>
+</table>
+HTML;
         $file->addConfiguration($configuration);
     }
 
@@ -140,14 +155,20 @@ HTML;
 HTML
         );
         $anchors = $document->getElementsByTagName('a');
+        $routePrefix = $this->options->getOption('generators')['posts']['route_prefix'] ?? null;
         /** @var Element $anchor */
         foreach ($anchors as $anchor) {
             if (preg_match(
-                '~^(../\d{4}/)?(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})-(?<rest>.+)[.]md(#(?<anchor>[^#]+))?$~',
+                '~^([.][.]/\d{4}/)?(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})-(?<rest>.+)[.]md(#(?<anchor>[^#]+))?$~',
                 $anchor->getAttribute('href'),
                 $matches)
             ) {
-                $updatedLink = sprintf('../../../../%s/%s/%s/%s/', $matches['year'], $matches['month'], $matches['day'], $matches['rest']);
+                if ($routePrefix !== null) {
+                    $updatedLink = '/' . str_replace([':year', ':month', ':day'], [$matches['year'], $matches['month'], $matches['day']], $routePrefix);
+                    $updatedLink .= '/' . $matches['rest'] . '/';
+                } else {
+                    $updatedLink = sprintf('../../../../%s/%s/%s/%s/', $matches['year'], $matches['month'], $matches['day'], $matches['rest']);
+                }
                 if (!empty($matches['anchor'])) {
                     $hashAnchor = str_replace('_', '-', StringTools::toSnakeCaseId($matches['anchor']));
                     $updatedLink .= '#' . $hashAnchor;

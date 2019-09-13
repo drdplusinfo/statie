@@ -85,15 +85,39 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
 
         $this->markdownFileDecorator->decorateFiles([$file]);
 
-        $this->assertSame('<strong>Hey</strong>', $file->getConfiguration()['perex']);
+        $this->assertSame(<<<HTML
+<table>
+<tbody>
+  <tr>
+    <td></td><td><strong>Hey</strong></td>
+  </tr>
+</tbody>
+</table>
+HTML
+            ,
+            $file->getConfiguration()['perex']
+        );
 
         $file->addConfiguration([
+            'perex' => '**Hey**',
             'image' => 'foo.png',
             'image_title' => 'Baz',
             'title' => 'Bar',
         ]);
         $this->markdownFileDecorator->decorateFiles([$file]);
-        $this->assertSame('<img src="foo.png" alt="Bar" title="Baz"><strong>Hey</strong>', $file->getConfiguration()['perex']);
+        $this->assertSame(
+            <<<HTML
+<table>
+<tbody>
+  <tr>
+    <td><img src="foo.png" alt="Bar" title="Baz"></td><td><strong>Hey</strong></td>
+  </tr>
+</tbody>
+</table>
+HTML
+            ,
+            $file->getConfiguration()['perex']
+        );
     }
 
     public function testMarkdownImageAuthor(): void
@@ -130,11 +154,11 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
         return [
             'file in same dir' => [
                 __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-02-fileWithLinkToMarkdownFileInCurrentDir.md',
-                '<p><a href="../../../../2019/01/03/fileWithLinkToMarkdownFileInDifferentDir/">foo</a></p>',
+                '<p><a href="/blog/2019/01/03/fileWithLinkToMarkdownFileInDifferentDir/">foo</a></p>',
             ],
             'file in another dir' => [
                 __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-01-03-fileWithLinkToMarkdownFileInDifferentDir.md',
-                '<p><a href="../../../../2018/01/01/bar/#cas-klidu">foo</a></p>',
+                '<p><a href="/blog/2018/01/01/bar/#cas-klidu">foo</a></p>',
             ],
             'file in local hash' => [
                 __DIR__ . '/MarkdownFileDecoratorSource/2019/2019-05-05-fileWithLocalHash.md',

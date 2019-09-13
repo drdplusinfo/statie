@@ -7,7 +7,7 @@ use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\Statie\Exception\Configuration\MissingGithubRepositorySlugException;
 use Symplify\Statie\FileSystem\FileSystemGuard;
 
-final class StatieConfiguration
+final class StatieConfiguration implements OptionsInterface
 {
     /**
      * @var string
