@@ -4,6 +4,7 @@ namespace Symplify\Statie\Latte;
 
 use Latte\Engine;
 use Latte\ILoader;
+use Latte\Loader;
 use Symplify\Statie\Contract\Templating\FilterProviderInterface;
 
 final class LatteFactory
@@ -11,7 +12,7 @@ final class LatteFactory
     /**
      * @var FilterProviderInterface[]
      */
-    private $filterProviders = [];
+    private $filterProviders;
 
     /**
      * @var ILoader
@@ -19,9 +20,10 @@ final class LatteFactory
     private $loader;
 
     /**
+     * @param Loader $loader
      * @param FilterProviderInterface[] $filterProviders
      */
-    public function __construct(ILoader $loader, array $filterProviders)
+    public function __construct(Loader $loader, array $filterProviders)
     {
         $this->loader = $loader;
         $this->filterProviders = $filterProviders;

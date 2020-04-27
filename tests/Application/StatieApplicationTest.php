@@ -78,7 +78,7 @@ final class StatieApplicationTest extends AbstractKernelTestCase
             __DIR__ . '/StatieApplicationSource/output'
         );
 
-        $this->expectExceptionMessageRegExp('#Did you mean "_layouts/default.latte"#');
+        $this->expectExceptionMessageMatches('#Did you mean "_layouts/default.latte"#');
         $this->assertNotEmpty($this->arrayLoader->getContent('layout/default.latte'));
     }
 }
