@@ -18,7 +18,7 @@ final class PostTweet
     private $image;
 
     /**
-     * @var DateTimeInterface
+     * @var DateTimeInterface$imageElements
      */
     private $postDateTime;
 
