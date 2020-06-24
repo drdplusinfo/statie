@@ -73,19 +73,6 @@ final class PostFile extends AbstractGeneratorFile implements \ArrayAccess
     }
 
     /**
-     * @return array|string[]
-     */
-    public function getPostImages(): array
-    {
-        if ($this->getExtension() !== 'md') {
-            return []; // not supported
-        }
-        preg_match_all('~!\[[^]]*]\((?<url>[^)]+)\)~', $this->getContent(), $matches);
-
-        return $matches['url'];
-    }
-
-    /**
      * @param mixed $offset
      * @return \DateTimeInterface|string|null
      */
