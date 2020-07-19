@@ -97,13 +97,10 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
             $imageHtml = $this->getImageForPerex($configuration['image'], $configuration['title'] ?? '', $configuration['image_title'] ?? '');
         }
         $configuration['perex'] = <<<HTML
-<table>
-<tbody>
-  <tr>
-    <td>$imageHtml</td><td>$perextTextContent</td>
-  </tr>
-</tbody>
-</table>
+<span class="row">
+    <span class="col-lg-4 col-sm perex-image-container align-self-center">$imageHtml</span>
+    <span class="col-lg-8 col-sm">$perextTextContent</span>
+</span>
 HTML;
         $file->addConfiguration($configuration);
     }
