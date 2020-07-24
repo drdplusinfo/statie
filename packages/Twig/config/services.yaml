@@ -12,3 +12,7 @@ services:
     # twig setup
     Twig\Loader\ArrayLoader:
     Latte\Runtime\FilterExecutor:
+    Granam\WebContentBuilder\AssetsVersion:
+    Granam\WebContentBuilder\Dirs:
+        arguments:
+            $projectRoot: '%kernel.project_dir%'

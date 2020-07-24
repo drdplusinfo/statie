@@ -2,6 +2,8 @@
 
 namespace Symplify\Statie\Twig\Renderable;
 
+use Granam\WebContentBuilder\AssetsVersion;
+use Granam\WebContentBuilder\Dirs;
 use Nette\Utils\Strings;
 use Symplify\Statie\Configuration\TemplatingDetector;
 use Symplify\Statie\Contract\Renderable\FileDecoratorInterface;
@@ -37,15 +39,27 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
      * @var TemplatingDetector
      */
     private $templatingDetector;
+    /**
+     * @var AssetsVersion
+     */
+    private $assetsVersion;
+    /**
+     * @var Dirs
+     */
+    private $dirs;
 
     public function __construct(
         TwigRenderer $twigRenderer,
         CodeBlocksProtector $codeBlocksProtector,
-        TemplatingDetector $templatingDetector
+        TemplatingDetector $templatingDetector,
+        AssetsVersion $assetsVersion,
+        Dirs $dirs
     ) {
         $this->twigRenderer = $twigRenderer;
         $this->codeBlocksProtector = $codeBlocksProtector;
         $this->templatingDetector = $templatingDetector;
+        $this->assetsVersion = $assetsVersion;
+        $this->dirs = $dirs;
     }
 
     /**
@@ -69,6 +83,7 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
             $parameters = $this->createParameters($file, 'file');
 
             $content = $this->twigRenderer->renderFileWithParameters($file, $parameters);
+            $content = $this->assetsVersion->addVersionsToAssetLinksInContent($content, $this->dirs->getProjectRoot(), $file->getFilePath());
 
             $file->changeContent($content);
         }

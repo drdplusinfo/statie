@@ -71,7 +71,7 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
 
         $this->markdownFileDecorator->decorateFiles([$file]);
 
-        $this->assertSame('<em>Why</em>', $file->getConfiguration()['title']);
+        self::assertSame('<em>Why</em>', $file->getConfiguration()['title']);
     }
 
     public function testMarkdownPerex(): void
@@ -85,14 +85,11 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
 
         $this->markdownFileDecorator->decorateFiles([$file]);
 
-        $this->assertSame(<<<HTML
-<table>
-<tbody>
-  <tr>
-    <td></td><td><strong>Hey</strong></td>
-  </tr>
-</tbody>
-</table>
+        self::assertSame(<<<HTML
+<span class="row">
+    <span class="col-lg-4 col-sm perex-image-container align-self-center"></span>
+    <span class="col-lg-8 col-sm"><strong>Hey</strong></span>
+</span>
 HTML
             ,
             $file->getConfiguration()['perex']
@@ -105,15 +102,12 @@ HTML
             'title' => 'Bar',
         ]);
         $this->markdownFileDecorator->decorateFiles([$file]);
-        $this->assertSame(
+        self::assertSame(
             <<<HTML
-<table>
-<tbody>
-  <tr>
-    <td><img src="foo.png" alt="Bar" title="Baz"></td><td><strong>Hey</strong></td>
-  </tr>
-</tbody>
-</table>
+<span class="row">
+    <span class="col-lg-4 col-sm perex-image-container align-self-center"><img src="foo.png" alt="Bar" title="Baz"></span>
+    <span class="col-lg-8 col-sm"><strong>Hey</strong></span>
+</span>
 HTML
             ,
             $file->getConfiguration()['perex']
@@ -131,7 +125,7 @@ HTML
 
         $this->markdownFileDecorator->decorateFiles([$file]);
 
-        $this->assertSame('<strong>Foo</strong> <em>Bar</em> <a href="qux">baz</a>', $file->getConfiguration()['image_author']);
+        self::assertSame('<strong>Foo</strong> <em>Bar</em> <a href="qux">baz</a>', $file->getConfiguration()['image_author']);
     }
 
     /**
@@ -146,7 +140,7 @@ HTML
 
         $this->markdownFileDecorator->decorateFiles([$file]);
 
-        $this->assertSame($expectedOutput, $file->getContent());
+        self::assertSame($expectedOutput, $file->getContent());
     }
 
     public function provideLinkToLocalFile(): array
