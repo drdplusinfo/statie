@@ -2,8 +2,7 @@
 
 namespace Symplify\Statie\Twig\Renderable;
 
-use Granam\WebContentBuilder\AssetsVersion;
-use Granam\WebContentBuilder\Dirs;
+use Granam\AssetsVersion\AssetsVersionInjector;
 use Nette\Utils\Strings;
 use Symplify\Statie\Configuration\TemplatingDetector;
 use Symplify\Statie\Contract\Renderable\FileDecoratorInterface;
@@ -40,26 +39,27 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
      */
     private $templatingDetector;
     /**
-     * @var AssetsVersion
+     * @var AssetsVersionInjector
      */
-    private $assetsVersion;
+    private $assetsVersionInjector;
     /**
-     * @var Dirs
+     * @var string | null
      */
-    private $dirs;
+    private $assetsRootDir;
 
     public function __construct(
         TwigRenderer $twigRenderer,
         CodeBlocksProtector $codeBlocksProtector,
         TemplatingDetector $templatingDetector,
-        AssetsVersion $assetsVersion,
-        Dirs $dirs
-    ) {
+        AssetsVersionInjector $assetsVersionInjector,
+        string $assetsRootDir = null
+    )
+    {
         $this->twigRenderer = $twigRenderer;
         $this->codeBlocksProtector = $codeBlocksProtector;
         $this->templatingDetector = $templatingDetector;
-        $this->assetsVersion = $assetsVersion;
-        $this->dirs = $dirs;
+        $this->assetsVersionInjector = $assetsVersionInjector;
+        $this->assetsRootDir = $assetsRootDir;
     }
 
     /**
@@ -69,7 +69,7 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
     public function decorateFiles(array $files): array
     {
         foreach ($files as $file) {
-            if (! in_array($file->getExtension(), ['twig', 'md'], true)) {
+            if (!in_array($file->getExtension(), ['twig', 'md'], true)) {
                 continue;
             }
 
@@ -83,7 +83,11 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
             $parameters = $this->createParameters($file, 'file');
 
             $content = $this->twigRenderer->renderFileWithParameters($file, $parameters);
-            $content = $this->assetsVersion->addVersionsToAssetLinksInContent($content, $this->dirs->getProjectRoot(), $file->getFilePath());
+            $content = $this->assetsVersionInjector->addVersionsToAssetLinks(
+                $content,
+                $this->assetsRootDir ?: dirname($file->getFilePath()),
+                $file->getFilePath()
+            );
 
             $file->changeContent($content);
         }
@@ -98,7 +102,7 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
     public function decorateFilesWithGeneratorElement(array $files, GeneratorElement $generatorElement): array
     {
         foreach ($files as $file) {
-            if (! in_array($file->getExtension(), ['twig', 'md'], true)) {
+            if (!in_array($file->getExtension(), ['twig', 'md'], true)) {
                 continue;
             }
 
@@ -146,18 +150,18 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
      */
     private function attachExtendsAndBlockContentToFileContent(AbstractFile $file, ?string $layout): void
     {
-        if (! $layout) {
+        if (!$layout) {
             return;
         }
 
         $content = $this->codeBlocksProtector->protectContentFromCallback(
             $file->getContent(),
             function (string $content) use ($layout) {
-                if (! Strings::match($content, self::BLOCK_CONTENT_PATTERN)) {
+                if (!Strings::match($content, self::BLOCK_CONTENT_PATTERN)) {
                     $content = '{% block content %}' . $content . '{% endblock %}';
                 }
 
-                if (! Strings::match($content, self::EXTEND_PATTERN)) {
+                if (!Strings::match($content, self::EXTEND_PATTERN)) {
                     $content = '{% extends "' . $layout . '" %}' . $content;
                 }
 

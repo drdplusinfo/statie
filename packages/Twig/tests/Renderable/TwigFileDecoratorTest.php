@@ -43,7 +43,7 @@ final class TwigFileDecoratorTest extends AbstractKernelTestCase
     {
         $file = $this->createFileFromFilePath(__DIR__ . '/TwigFileDecoratorSource/fileWithoutLayout.twig');
         $this->twigFileDecorator->decorateFiles([$file]);
-        $this->assertStringContainsString('Contact me!', $file->getContent());
+        self::assertStringContainsString('Contact me!', $file->getContent());
     }
 
     public function testDecorateFileWithLayout(): void
@@ -55,7 +55,7 @@ final class TwigFileDecoratorTest extends AbstractKernelTestCase
 
         $this->twigFileDecorator->decorateFiles([$file]);
 
-        $this->assertStringEqualsFile(__DIR__ . '/TwigFileDecoratorSource/expectedContact.html', $file->getContent());
+        self::assertStringEqualsFile(__DIR__ . '/TwigFileDecoratorSource/expectedContact.html', $file->getContent());
     }
 
     public function testDecorateFileWithFileVariable(): void
@@ -63,7 +63,7 @@ final class TwigFileDecoratorTest extends AbstractKernelTestCase
         $file = $this->createFileFromFilePath(__DIR__ . '/TwigFileDecoratorSource/fileWithFileVariable.twig');
         $this->twigFileDecorator->decorateFiles([$file]);
 
-        $this->assertStringContainsString('fileWithFileVariable.twig', $file->getContent());
+        self::assertStringContainsString('fileWithFileVariable.twig', $file->getContent());
     }
 
     public function testDecorateFileWithInvalidTwigSyntax(): void
@@ -90,8 +90,24 @@ final class TwigFileDecoratorTest extends AbstractKernelTestCase
 
         $this->twigFileDecorator->decorateFiles([$file]);
 
-        $this->assertStringEqualsFile(
+        self::assertStringEqualsFile(
             __DIR__ . '/TwigFileDecoratorSource/expectedWithHighlightedCode.html',
+            $file->getContent()
+        );
+    }
+
+    public function testDecorateFileWithAutoVersionedAssets(): void
+    {
+        $file = $this->createFileFromFilePath(__DIR__ . '/TwigFileDecoratorSource/fileWithAssets.twig');
+
+        $file->addConfiguration([
+            'layout' => 'default',
+        ]);
+
+        $this->twigFileDecorator->decorateFiles([$file]);
+
+        self::assertStringEqualsFile(
+            __DIR__ . '/TwigFileDecoratorSource/expectedFileWithAssets.html',
             $file->getContent()
         );
     }

@@ -9,10 +9,11 @@ services:
     Symplify\Statie\Twig\:
         resource: '../src'
 
+    Symplify\Statie\Twig\Renderable\TwigFileDecorator:
+        arguments:
+            $assetsRootDir: "@=container.hasParameter('assets_root_dir') ? parameter('assets_root_dir') : null"
+
     # twig setup
     Twig\Loader\ArrayLoader:
     Latte\Runtime\FilterExecutor:
-    Granam\WebContentBuilder\AssetsVersion:
-    Granam\WebContentBuilder\Dirs:
-        arguments:
-            $projectRoot: '%kernel.project_dir%'
+    Granam\AssetsVersion\AssetsVersionInjector:
