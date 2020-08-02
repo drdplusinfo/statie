@@ -43,16 +43,21 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
      */
     private $assetsVersionInjector;
     /**
-     * @var string | null
+     * @var string|null
      */
     private $assetsRootDir;
+    /**
+     * @var string
+     */
+    private $assetsAutoVersionExcludingRegexp;
 
     public function __construct(
         TwigRenderer $twigRenderer,
         CodeBlocksProtector $codeBlocksProtector,
         TemplatingDetector $templatingDetector,
         AssetsVersionInjector $assetsVersionInjector,
-        string $assetsRootDir = null
+        string $assetsRootDir = null,
+        string $assetsAutoVersionExcludingRegexp = AssetsVersionInjector::NO_REGEXP_TO_EXCLUDE_LINKS
     )
     {
         $this->twigRenderer = $twigRenderer;
@@ -60,6 +65,7 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
         $this->templatingDetector = $templatingDetector;
         $this->assetsVersionInjector = $assetsVersionInjector;
         $this->assetsRootDir = $assetsRootDir;
+        $this->assetsAutoVersionExcludingRegexp = $assetsAutoVersionExcludingRegexp;
     }
 
     /**
@@ -86,6 +92,7 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
             $content = $this->assetsVersionInjector->addVersionsToAssetLinks(
                 $content,
                 $this->assetsRootDir ?: dirname($file->getFilePath()),
+                $this->assetsAutoVersionExcludingRegexp,
                 $file->getFilePath()
             );
 

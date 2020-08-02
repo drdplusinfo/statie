@@ -12,6 +12,7 @@ services:
     Symplify\Statie\Twig\Renderable\TwigFileDecorator:
         arguments:
             $assetsRootDir: "@=container.hasParameter('assets_root_dir') ? parameter('assets_root_dir') : null"
+            $assetsAutoVersionExcludingRegexp: "@=container.hasParameter('assets_auto_version_excluding_regexp') ? parameter('assets_auto_version_excluding_regexp') : ''"
 
     # twig setup
     Twig\Loader\ArrayLoader:
