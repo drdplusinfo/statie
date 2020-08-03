@@ -55,7 +55,7 @@ final class FileSystemWriterTest extends AbstractKernelTestCase
         $file = new SmartFileInfo($this->sourceDirectory . '/index.html');
         $this->fileSystemWriter->copyStaticFiles([$file]);
 
-        $this->assertFileEquals($this->sourceDirectory . '/index.html', $this->outputDirectory . '/index.html');
+        self::assertFileEquals($this->sourceDirectory . '/index.html', $this->outputDirectory . '/index.html');
     }
 
     public function testCopyRenderableFiles(): void
@@ -66,9 +66,24 @@ final class FileSystemWriterTest extends AbstractKernelTestCase
 
         $this->fileSystemWriter->renderFiles([$file]);
 
-        $this->assertFileEquals(
+        self::assertFileEquals(
             $this->sourceDirectory . '/contact.latte',
             $this->outputDirectory . '/contact.html'
         );
     }
+
+    public function testRenderFileWithAutoVersionedAssets(): void
+    {
+        $fileInfo = new SmartFileInfo($this->sourceDirectory . '/fileWithAssets.html');
+        $file = $this->fileFactory->createFromFileInfo($fileInfo);
+        $file->setOutputPath('fileWithAssets.html');
+
+        $this->fileSystemWriter->renderFiles([$file]);
+
+        self::assertFileEquals(
+            $this->sourceDirectory . '/expectedFileWithAssets.html',
+            $this->outputDirectory . '/fileWithAssets.html'
+        );
+    }
+
 }

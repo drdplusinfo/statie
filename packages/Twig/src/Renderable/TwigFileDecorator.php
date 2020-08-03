@@ -2,7 +2,6 @@
 
 namespace Symplify\Statie\Twig\Renderable;
 
-use Granam\AssetsVersion\AssetsVersionInjector;
 use Nette\Utils\Strings;
 use Symplify\Statie\Configuration\TemplatingDetector;
 use Symplify\Statie\Contract\Renderable\FileDecoratorInterface;
@@ -38,34 +37,16 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
      * @var TemplatingDetector
      */
     private $templatingDetector;
-    /**
-     * @var AssetsVersionInjector
-     */
-    private $assetsVersionInjector;
-    /**
-     * @var string|null
-     */
-    private $assetsRootDir;
-    /**
-     * @var string
-     */
-    private $assetsAutoVersionExcludingRegexp;
 
     public function __construct(
         TwigRenderer $twigRenderer,
         CodeBlocksProtector $codeBlocksProtector,
-        TemplatingDetector $templatingDetector,
-        AssetsVersionInjector $assetsVersionInjector,
-        string $assetsRootDir = null,
-        string $assetsAutoVersionExcludingRegexp = AssetsVersionInjector::NO_REGEXP_TO_EXCLUDE_LINKS
+        TemplatingDetector $templatingDetector
     )
     {
         $this->twigRenderer = $twigRenderer;
         $this->codeBlocksProtector = $codeBlocksProtector;
         $this->templatingDetector = $templatingDetector;
-        $this->assetsVersionInjector = $assetsVersionInjector;
-        $this->assetsRootDir = $assetsRootDir;
-        $this->assetsAutoVersionExcludingRegexp = $assetsAutoVersionExcludingRegexp;
     }
 
     /**
@@ -89,12 +70,6 @@ final class TwigFileDecorator extends AbstractTemplatingFileDecorator implements
             $parameters = $this->createParameters($file, 'file');
 
             $content = $this->twigRenderer->renderFileWithParameters($file, $parameters);
-            $content = $this->assetsVersionInjector->addVersionsToAssetLinks(
-                $content,
-                $this->assetsRootDir ?: dirname($file->getFilePath()),
-                $this->assetsAutoVersionExcludingRegexp,
-                $file->getFilePath()
-            );
 
             $file->changeContent($content);
         }

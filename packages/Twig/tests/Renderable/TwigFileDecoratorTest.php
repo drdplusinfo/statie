@@ -96,22 +96,6 @@ final class TwigFileDecoratorTest extends AbstractKernelTestCase
         );
     }
 
-    public function testDecorateFileWithAutoVersionedAssets(): void
-    {
-        $file = $this->createFileFromFilePath(__DIR__ . '/TwigFileDecoratorSource/fileWithAssets.twig');
-
-        $file->addConfiguration([
-            'layout' => 'default',
-        ]);
-
-        $this->twigFileDecorator->decorateFiles([$file]);
-
-        self::assertStringEqualsFile(
-            __DIR__ . '/TwigFileDecoratorSource/expectedFileWithAssets.html',
-            $file->getContent()
-        );
-    }
-
     private function createFileFromFilePath(string $filePath): AbstractFile
     {
         $fileInfo = new SmartFileInfo($filePath);

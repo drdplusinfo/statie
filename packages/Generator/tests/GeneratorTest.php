@@ -26,7 +26,7 @@ final class GeneratorTest extends AbstractGeneratorTest
         foreach ($generatorFilesByType as $generatorFiles) {
             foreach ($generatorFiles as $key => $generatorFile) {
                 /** @var AbstractGeneratorFile $generatorFile */
-                $this->assertSame((string)$key, $generatorFile->getId());
+                self::assertSame((string)$key, $generatorFile->getId());
             }
         }
     }
@@ -54,19 +54,19 @@ final class GeneratorTest extends AbstractGeneratorTest
         $generatorFilesByType = $this->generator->run();
         $postFiles = $generatorFilesByType['posts'];
 
-        $this->assertCount(6, $postFiles);
+        self::assertCount(6, $postFiles);
 
         $this->fileSystemWriter->renderFiles($postFiles);
 
         // posts
-        $this->assertFileExists($this->outputDirectory . '/blog/2016/10/10/title/index.html');
-        $this->assertFileExists($this->outputDirectory . '/blog/2016/01/02/second-title/index.html');
+        self::assertFileExists($this->outputDirectory . '/blog/2016/10/10/title/index.html');
+        self::assertFileExists($this->outputDirectory . '/blog/2016/01/02/second-title/index.html');
 
-        $this->assertFileExists($this->outputDirectory . '/blog/2017/01/01/some-post/index.html');
-        $this->assertFileExists($this->outputDirectory . '/blog/2017/01/05/another-related-post/index.html');
-        $this->assertFileExists($this->outputDirectory . '/blog/2017/01/05/some-related-post/index.html');
+        self::assertFileExists($this->outputDirectory . '/blog/2017/01/01/some-post/index.html');
+        self::assertFileExists($this->outputDirectory . '/blog/2017/01/05/another-related-post/index.html');
+        self::assertFileExists($this->outputDirectory . '/blog/2017/01/05/some-related-post/index.html');
 
-        $this->assertFileExists($this->outputDirectory . '/blog/2017/02/05/offtopic-post/index.html');
+        self::assertFileExists($this->outputDirectory . '/blog/2017/02/05/offtopic-post/index.html');
     }
 
     public function testLatteBlocks(): void
@@ -76,7 +76,7 @@ final class GeneratorTest extends AbstractGeneratorTest
 
         $this->fileSystemWriter->renderFiles($postFiles);
 
-        $this->assertFileEquals(
+        self::assertFileEquals(
             __DIR__ . '/GeneratorSource/expected/post-with-latte-blocks-expected.html',
             $this->outputDirectory . '/blog/2016/01/02/second-title/index.html'
         );
@@ -87,32 +87,32 @@ final class GeneratorTest extends AbstractGeneratorTest
         $generatorFilesByType = $this->generator->run();
         $lectureFiles = $generatorFilesByType['lectures'];
 
-        $this->assertCount(1, $lectureFiles);
+        self::assertCount(1, $lectureFiles);
 
         $this->fileSystemWriter->renderFiles($lectureFiles);
 
         // lectures
-        $this->assertFileExists($this->outputDirectory . '/lecture/open-source-lecture/index.html');
+        self::assertFileExists($this->outputDirectory . '/lecture/open-source-lecture/index.html');
     }
 
     public function testConfiguration(): void
     {
-        $this->assertArrayNotHasKey('posts', $this->statieConfiguration->getOptions());
-        $this->assertArrayNotHasKey('lectures', $this->statieConfiguration->getOptions());
+        self::assertArrayNotHasKey('posts', $this->statieConfiguration->getOptions());
+        self::assertArrayNotHasKey('lectures', $this->statieConfiguration->getOptions());
 
         $this->generator->run();
 
-        $this->assertArrayHasKey('posts', $this->statieConfiguration->getOptions());
-        $this->assertArrayHasKey('lectures', $this->statieConfiguration->getOptions());
+        self::assertArrayHasKey('posts', $this->statieConfiguration->getOptions());
+        self::assertArrayHasKey('lectures', $this->statieConfiguration->getOptions());
 
         $posts = $this->statieConfiguration->getOption('posts');
-        $this->assertCount(6, $posts);
+        self::assertCount(6, $posts);
 
         $lectures = $this->statieConfiguration->getOption('lectures');
-        $this->assertCount(1, $lectures);
+        self::assertCount(1, $lectures);
 
         // detect date correctly from name
         $firstPost = array_pop($posts);
-        $this->assertInstanceOf(DateTimeInterface::class, $firstPost['date']);
+        self::assertInstanceOf(DateTimeInterface::class, $firstPost['date']);
     }
 }

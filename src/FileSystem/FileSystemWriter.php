@@ -2,6 +2,7 @@
 
 namespace Symplify\Statie\FileSystem;
 
+use Granam\AssetsVersion\AssetsVersionInjector;
 use Nette\Utils\FileSystem;
 use Symplify\PackageBuilder\FileSystem\SmartFileInfo;
 use Symplify\Statie\Configuration\StatieConfiguration;
@@ -13,10 +14,30 @@ final class FileSystemWriter
      * @var StatieConfiguration
      */
     private $statieConfiguration;
+    /**
+     * @var AssetsVersionInjector
+     */
+    private $assetsVersionInjector;
+    /**
+     * @var string|null
+     */
+    private $assetsRootDir;
+    /**
+     * @var string
+     */
+    private $assetsAutoVersionExcludingRegexp;
 
-    public function __construct(StatieConfiguration $statieConfiguration)
+    public function __construct(
+        StatieConfiguration $statieConfiguration,
+        AssetsVersionInjector $assetsVersionInjector
+/*        string $assetsRootDir = null,
+        string $assetsAutoVersionExcludingRegexp = AssetsVersionInjector::NO_REGEXP_TO_EXCLUDE_LINKS*/
+    )
     {
         $this->statieConfiguration = $statieConfiguration;
+        $this->assetsVersionInjector = $assetsVersionInjector;
+/*        $this->assetsRootDir = $assetsRootDir;
+        $this->assetsAutoVersionExcludingRegexp = $assetsAutoVersionExcludingRegexp;*/
     }
 
     /**
@@ -44,7 +65,18 @@ final class FileSystemWriter
                 . DIRECTORY_SEPARATOR
                 . $file->getOutputPath();
 
-            FileSystem::write($absoluteDestination, $file->getContent());
+            $content = $file->getContent();
+
+            if (is_callable([$file, 'getFilePath'])) {
+                $content = $this->assetsVersionInjector->addVersionsToAssetLinks(
+                    $content,
+                    $this->statieConfiguration->getOption('assets')['root_dir'] ?? dirname($file->getFilePath()),
+                    $this->statieConfiguration->getOption('assets')['auto_version_excluding_regexp'] ?? '',
+                    $file->getFilePath()
+                );
+            }
+
+            FileSystem::write($absoluteDestination, $content);
         }
     }
 }

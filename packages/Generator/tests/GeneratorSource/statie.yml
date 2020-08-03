@@ -14,3 +14,5 @@ parameters:
             route_prefix: 'lecture'
             # object
             object: 'Symplify\Statie\Generator\Tests\GeneratorSource\File\LectureFile'
+    assets:
+        auto_version_excluding_regexp: '~statie-(blog|post)[.]png$~'
