@@ -99,16 +99,26 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
             ['imageWidth' => $imageWidth, 'imageHeight' => $imageHeight] = $this->getImageDimensions($configuration['image']);
             $imageHtml = $this->getImageForPerex($configuration['image'], $configuration['title'] ?? '', $configuration['image_title'] ?? '', $imageWidth, $imageHeight);
         }
-        $bootstrapImageClass = 'col-lg';
-        $bootstrapTextClass = 'col-lg';
+        $perexClass = 'perex-parts-even';
+        $colSize = 'lg';
+        if ($imageWidth) {
+            if ($imageWidth < 400) {
+                $colSize = 'sm';
+            } elseif ($imageWidth < 600) {
+                $colSize = 'md';
+            }
+        }
+        $imageClass = "col-{$colSize}";
+        $textClass = "col-{$colSize}";
         if (!$imageWidth || !$imageHeight || $imageWidth / $imageHeight <= 1.3) {
-            $bootstrapImageClass = 'col-lg-4';
-            $bootstrapTextClass = 'col-lg-8';
+            $perexClass = 'perex-parts-uneven';
+            $imageClass = "col-{$colSize}-4";
+            $textClass = "col-{$colSize}-8";
         }
         $configuration['perex'] = <<<HTML
-<span class="row">
-    <span class="{$bootstrapImageClass} perex-image-container align-self-center">$imageHtml</span>
-    <span class="{$bootstrapTextClass} perex-text-container">$perextTextContent</span>
+<span class="row {$perexClass}">
+    <span class="{$imageClass} perex-image-container align-self-center">$imageHtml</span>
+    <span class="{$textClass} perex-text-container">$perextTextContent</span>
 </span>
 HTML;
         $file->addConfiguration($configuration);

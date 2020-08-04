@@ -86,9 +86,9 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
         $this->markdownFileDecorator->decorateFiles([$file]);
 
         self::assertSame(<<<HTML
-<span class="row">
-    <span class="col-lg-4 col-sm perex-image-container align-self-center"></span>
-    <span class="col-lg-8 col-sm"><strong>Hey</strong></span>
+<span class="row perex-parts-uneven">
+    <span class="col-lg-4 perex-image-container align-self-center"></span>
+    <span class="col-lg-8 perex-text-container"><strong>Hey</strong></span>
 </span>
 HTML
             ,
@@ -104,9 +104,9 @@ HTML
         $this->markdownFileDecorator->decorateFiles([$file]);
         self::assertSame(
             <<<HTML
-<span class="row">
-    <span class="col-lg-4 col-sm perex-image-container align-self-center"><img src="/assets/images/same_width_and_height.png" alt="Bar" title="Baz" width="460" height="460"></span>
-    <span class="col-lg-8 col-sm"><strong>Hey</strong></span>
+<span class="row perex-parts-uneven">
+    <span class="col-md-4 perex-image-container align-self-center"><img src="/assets/images/same_width_and_height.png" alt="Bar" title="Baz" width="460" height="460"></span>
+    <span class="col-md-8 perex-text-container"><strong>Hey</strong></span>
 </span>
 HTML
             ,
@@ -122,9 +122,9 @@ HTML
         $this->markdownFileDecorator->decorateFiles([$file]);
         self::assertSame(
             <<<HTML
-<span class="row">
+<span class="row perex-parts-even">
     <span class="col-lg perex-image-container align-self-center"><img src="/assets/images/wide.png" alt="Bar" title="Baz" width="600" height="426"></span>
-    <span class="col-lg"><strong>Bye</strong></span>
+    <span class="col-lg perex-text-container"><strong>Bye</strong></span>
 </span>
 HTML
             ,
