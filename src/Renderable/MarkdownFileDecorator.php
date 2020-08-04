@@ -115,6 +115,8 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
             $imageClass = "col-{$colSize}-4";
             $textClass = "col-{$colSize}-8";
         }
+        $imageClass .= " bootstrap-column-size-{$colSize}";
+        $textClass .= " bootstrap-column-size-{$colSize}";
         $configuration['perex'] = <<<HTML
 <span class="row {$perexClass}">
     <span class="{$imageClass} perex-image-container align-self-center">$imageHtml</span>
