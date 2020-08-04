@@ -100,13 +100,13 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
             $imageHtml = $this->getImageForPerex($configuration['image'], $configuration['title'] ?? '', $configuration['image_title'] ?? '', $imageWidth, $imageHeight);
         }
         $configuration['perex'] = $imageWidth && $imageHeight && $imageWidth / $imageHeight > 1.3
-         ? <<<HTML
+            ? <<<HTML
 <span class="row">
     <span class="col-lg perex-image-container align-self-center">$imageHtml</span>
     <span class="col-lg">$perextTextContent</span>
 </span>
 HTML
-        : <<<HTML
+            : <<<HTML
 <span class="row">
     <span class="col-lg-4 col-sm perex-image-container align-self-center">$imageHtml</span>
     <span class="col-lg-8 col-sm">$perextTextContent</span>
@@ -122,10 +122,12 @@ HTML;
         $imagePath = $assetsRootDir . $imageRelativePath;
         if (!is_readable($imagePath)) {
             throw new Exceptions\InvalidImagePathException(sprintf(
-                "No readable file has been found on path '%s' built from image link '%s' and assets root dir '%s'%s",
+                "No readable file has been found on path '%s' built from image link '%s'%s%s",
                 $imagePath,
                 $imageLink,
-                $assetsRootDir,
+                $assetsRootDir !== ''
+                    ? strpos(" and assets root dir '%s'", $assetsRootDir)
+                    : " (try to set asset root dir in config.yml via options assets root_dir)",
                 strpos($imagePath, '.') === 0 ? sprintf(" with current working directory '%s'", getcwd()) : ''
             ));
         }
