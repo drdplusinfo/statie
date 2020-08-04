@@ -24,7 +24,7 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
 
     protected function setUp(): void
     {
-        $this->bootKernel(StatieKernel::class);
+        $this->bootKernelWithConfigs(StatieKernel::class, [__DIR__ . '/config.yml']);
 
         $this->markdownFileDecorator = self::$container->get(MarkdownFileDecorator::class);
         $this->fileFactory = self::$container->get(FileFactory::class);
@@ -43,7 +43,7 @@ final class MarkdownFileDecoratorTest extends AbstractKernelTestCase
 
         $this->markdownFileDecorator->decorateFiles([$file]);
 
-        $this->assertStringContainsString($expectedContent, $file->getContent(), $message);
+        self::assertStringContainsString($expectedContent, $file->getContent(), $message);
     }
 
     public function provideFilesToHtml(): Iterator
@@ -97,7 +97,7 @@ HTML
 
         $file->addConfiguration([
             'perex' => '**Hey**',
-            'image' => 'foo.png',
+            'image' => '/assets/images/same_width_and_height.png',
             'image_title' => 'Baz',
             'title' => 'Bar',
         ]);
@@ -105,8 +105,26 @@ HTML
         self::assertSame(
             <<<HTML
 <span class="row">
-    <span class="col-lg-4 col-sm perex-image-container align-self-center"><img src="foo.png" alt="Bar" title="Baz"></span>
+    <span class="col-lg-4 col-sm perex-image-container align-self-center"><img src="/assets/images/same_width_and_height.png" alt="Bar" title="Baz" width="460" height="460"></span>
     <span class="col-lg-8 col-sm"><strong>Hey</strong></span>
+</span>
+HTML
+            ,
+            $file->getConfiguration()['perex']
+        );
+
+        $file->addConfiguration([
+            'perex' => '**Bye**',
+            'image' => '/assets/images/wide.png',
+            'image_title' => 'Baz',
+            'title' => 'Bar',
+        ]);
+        $this->markdownFileDecorator->decorateFiles([$file]);
+        self::assertSame(
+            <<<HTML
+<span class="row">
+    <span class="col-lg perex-image-container align-self-center"><img src="/assets/images/wide.png" alt="Bar" title="Baz" width="600" height="426"></span>
+    <span class="col-lg"><strong>Bye</strong></span>
 </span>
 HTML
             ,

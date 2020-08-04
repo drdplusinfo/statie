@@ -1,0 +1,3 @@
+parameters:
+  assets:
+    root_dir: './tests/Renderable/Markdown'

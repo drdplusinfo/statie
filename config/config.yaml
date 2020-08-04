@@ -23,6 +23,10 @@ parameters:
             # an object that will wrap it's logic, you can add helper methods into it and use it in templates
             object: 'Symplify\Statie\Renderable\File\PostFile'
 
+#    assets:
+#        root_dir: './source'
+#        auto_version_excluding_regexp: '~(^/rss[.]xml$|[.]md(#.+)?$)~'
+
 imports:
     - { resource: '../packages/**/config/config.yaml' }
     - { resource: '../packages/**/config/services.yaml' }

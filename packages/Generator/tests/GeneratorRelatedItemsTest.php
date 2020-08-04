@@ -29,10 +29,10 @@ final class GeneratorRelatedItemsTest extends AbstractGeneratorTest
 
         $relatedItems = $this->relatedItemsResolver->resolveForFile($postWithRelatedItems);
 
-        $this->assertCount(3, $relatedItems);
+        self::assertCount(3, $relatedItems);
 
-        $this->assertSame($posts['2017-02-05-1']['title'], $relatedItems[0]['title']);
-        $this->assertSame($posts['2017-01-05-2']['title'], $relatedItems[1]['title']);
-        $this->assertSame($posts['2017-01-05-1']['title'], $relatedItems[2]['title']);
+        self::assertSame($posts['2017-02-05-1']['title'], $relatedItems[0]['title']);
+        self::assertSame($posts['2017-01-05-2']['title'], $relatedItems[1]['title']);
+        self::assertSame($posts['2017-01-05-1']['title'], $relatedItems[2]['title']);
     }
 }

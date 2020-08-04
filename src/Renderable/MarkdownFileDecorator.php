@@ -93,10 +93,20 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
         }
         $perextTextContent = $this->toSimpleHtml($configuration['perex']);
         $imageHtml = '';
+        $imageWidth = null;
+        $imageHeight = null;
         if (!empty($configuration['image'])) {
-            $imageHtml = $this->getImageForPerex($configuration['image'], $configuration['title'] ?? '', $configuration['image_title'] ?? '');
+            ['imageWidth' => $imageWidth, 'imageHeight' => $imageHeight] = $this->getImageDimensions($configuration['image']);
+            $imageHtml = $this->getImageForPerex($configuration['image'], $configuration['title'] ?? '', $configuration['image_title'] ?? '', $imageWidth, $imageHeight);
         }
-        $configuration['perex'] = <<<HTML
+        $configuration['perex'] = $imageWidth && $imageHeight && $imageWidth / $imageHeight > 1.3
+         ? <<<HTML
+<span class="row">
+    <span class="col-lg perex-image-container align-self-center">$imageHtml</span>
+    <span class="col-lg">$perextTextContent</span>
+</span>
+HTML
+        : <<<HTML
 <span class="row">
     <span class="col-lg-4 col-sm perex-image-container align-self-center">$imageHtml</span>
     <span class="col-lg-8 col-sm">$perextTextContent</span>
@@ -105,18 +115,40 @@ HTML;
         $file->addConfiguration($configuration);
     }
 
+    private function getImageDimensions(string $imageLink): array
+    {
+        $imageRelativePath = substr($imageLink, 0, strpos($imageLink, '?') ?: strlen($imageLink));
+        $assetsRootDir = $this->options->getOption('assets')['root_dir'] ?? '';
+        $imagePath = $assetsRootDir . $imageRelativePath;
+        if (!is_readable($imagePath)) {
+            throw new Exceptions\InvalidImagePathException(sprintf(
+                "No readable file has been found on path '%s' built from image link '%s' and assets root dir '%s'%s",
+                $imagePath,
+                $imageLink,
+                $assetsRootDir,
+                strpos($imagePath, '.') === 0 ? sprintf(" with current working directory '%s'", getcwd()) : ''
+            ));
+        }
+        [$imageWidth, $imageHeight] = getimagesize($imagePath) ?: [null, null];
+
+        return ['imageWidth' => $imageWidth, 'imageHeight' => $imageHeight];
+    }
+
     private function toSimpleHtml(string $markdown): string
     {
         $html = $this->parsedownExtra->text($markdown);
         return preg_replace('~^<p>(.*)</p>$~', '$1', $html); //remove unwanted all-wrapping paragraph
     }
 
-    private function getImageForPerex(string $image, string $alternative, string $title): string
+    private function getImageForPerex(string $image, string $alternative, string $title, ?int $imageWidth, ?int $imageHeight): string
     {
         $escapedAlternative = htmlentities($alternative);
         $escapedTitle = htmlentities($title);
+        $widthAndHeight = $imageWidth && $imageHeight
+            ? sprintf('width="%d" height="%d"', $imageWidth, $imageHeight)
+            : '';
         return <<<HTML
-<img src="{$image}" alt="{$escapedAlternative}" title="{$escapedTitle}">
+<img src="{$image}" alt="{$escapedAlternative}" title="{$escapedTitle}" {$widthAndHeight}>
 HTML;
     }
 
