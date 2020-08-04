@@ -99,17 +99,16 @@ final class MarkdownFileDecorator implements FileDecoratorInterface
             ['imageWidth' => $imageWidth, 'imageHeight' => $imageHeight] = $this->getImageDimensions($configuration['image']);
             $imageHtml = $this->getImageForPerex($configuration['image'], $configuration['title'] ?? '', $configuration['image_title'] ?? '', $imageWidth, $imageHeight);
         }
-        $configuration['perex'] = $imageWidth && $imageHeight && $imageWidth / $imageHeight > 1.3
-            ? <<<HTML
+        $bootstrapImageClass = 'col-lg';
+        $bootstrapTextClass = 'col-lg';
+        if (!$imageWidth || !$imageHeight || $imageWidth / $imageHeight <= 1.3) {
+            $bootstrapImageClass = 'col-lg-4';
+            $bootstrapTextClass = 'col-lg-8';
+        }
+        $configuration['perex'] = <<<HTML
 <span class="row">
-    <span class="col-lg perex-image-container align-self-center">$imageHtml</span>
-    <span class="col-lg">$perextTextContent</span>
-</span>
-HTML
-            : <<<HTML
-<span class="row">
-    <span class="col-lg-4 col-sm perex-image-container align-self-center">$imageHtml</span>
-    <span class="col-lg-8 col-sm">$perextTextContent</span>
+    <span class="{$bootstrapImageClass} perex-image-container align-self-center">$imageHtml</span>
+    <span class="{$bootstrapTextClass} perex-text-container">$perextTextContent</span>
 </span>
 HTML;
         $file->addConfiguration($configuration);
