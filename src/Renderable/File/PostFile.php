@@ -52,6 +52,11 @@ final class PostFile extends AbstractGeneratorFile implements \ArrayAccess
         return $this->offsetGet('perex');
     }
 
+    public function getFacebookImage(): ?string
+    {
+        return $this->configuration['facebook_image'] ?? $this->configuration['image'] ?? null;
+    }
+
     public function getImage(): ?string
     {
         return $this->configuration['image'] ?? null;
